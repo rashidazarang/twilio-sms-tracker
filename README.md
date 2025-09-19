@@ -2,6 +2,7 @@
 
 ## Open-Source SMS Communication Management System
 
+[![Watch Demo](https://img.shields.io/badge/▶️_Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker&env=DATABASE_URL,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER&envDescription=Required%20environment%20variables&envLink=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker%23environment-variables&project-name=twilio-sms-tracker&repository-name=twilio-sms-tracker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
@@ -15,11 +16,7 @@
 
 ## 🎥 Demo Video
 
-[![Watch Demo](https://img.shields.io/badge/▶️_Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4)
-
-Watch our comprehensive walkthrough demonstrating all features and setup process. Click the button above to play the video.
-
-> **Note:** To see the video embedded directly in this README, you can [edit this file on GitHub](https://github.com/rashidazarang/twilio-sms-tracker/edit/main/README.md) and drag-drop the `demo-video.mp4` file where you want it to appear. GitHub will automatically create an embedded player.
+https://github.com/user-attachments/assets/b1136e98-fa81-4155-b0ab-f4760dbee0ca
 
 ## 📸 Screenshots
 
@@ -287,7 +284,7 @@ npm run build
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License; see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -296,19 +293,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - SMS delivery by [Twilio](https://www.twilio.com)
 - Icons from [Heroicons](https://heroicons.com)
 
-## 📞 Support
-
-| Type | Link |
-|------|------|
-| 💬 **Discussions** | [GitHub Discussions](https://github.com/rashidazarang/twilio-sms-tracker/discussions) |
-| 🐛 **Bug Reports** | [GitHub Issues](https://github.com/rashidazarang/twilio-sms-tracker/issues) |
-| 📧 **Email** | support@example.com |
-| 📖 **Docs** | [Documentation](https://github.com/rashidazarang/twilio-sms-tracker/wiki) |
-
 ---
 
-**Built with ❤️ for the business community**
+**Built with ❤️ by Rashid Azarang for the community**
 
-⭐ Star us on GitHub — it helps!
+⭐ Star us on GitHub
 
-[**Website**](https://example.com) • [**Blog**](https://blog.example.com) • [**Twitter**](https://twitter.com/example)
+[**Website**](https://rashidazarang.com/)• [**X**](https://x.com/rashidazarang)
