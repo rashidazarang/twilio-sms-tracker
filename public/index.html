@@ -1296,7 +1296,7 @@
                         <td x-text="msg.name"></td>
                         <td x-text="msg.dealership"></td>
                         <td x-text="formatAmount(msg.amount)"></td>
-                        <td x-text="msg.time"></td>
+                        <td x-text="formatTime(msg.time)"></td>
                         <td>
                           <span x-show="msg.errorCode" class="badge badge-danger" x-text="`Error ${msg.errorCode}`"></span>
                           <span x-show="!msg.errorCode">-</span>
@@ -1382,7 +1382,7 @@
                       <span x-text="`Hi ${msg.name}! Thank you for your visit to ${msg.dealership}. We'd love to hear about your experience.`"></span>
                     </div>
                     <div class="message-footer">
-                      <span x-text="msg.time"></span>
+                      <span x-text="formatTime(msg.time)"></span>
                       <div class="message-actions">
                         <button 
                           class="btn btn-secondary"
@@ -1447,7 +1447,7 @@
                         </div>
                         <div class="list-detail">
                           <span class="list-label">Time</span>
-                          <span class="list-value" x-text="msg.time"></span>
+                          <span class="list-value" x-text="formatTime(msg.time)"></span>
                         </div>
                         <div class="list-detail">
                           <span class="list-label">Status</span>
@@ -1899,12 +1899,43 @@
         formatTimestamp(timestamp) {
           if (!timestamp) return '—';
           try {
-            return new Intl.DateTimeFormat('en-US', {
-              dateStyle: 'medium',
-              timeStyle: 'short'
-            }).format(new Date(timestamp));
+            const date = new Date(timestamp);
+            // Format in Central Time
+            const options = {
+              timeZone: 'America/Chicago',
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            };
+            const formatted = new Intl.DateTimeFormat('en-US', options).format(date);
+            // Get timezone abbreviation (CST or CDT)
+            const tzOptions = { timeZone: 'America/Chicago', timeZoneName: 'short' };
+            const tzMatch = new Intl.DateTimeFormat('en-US', tzOptions).format(date).match(/[A-Z]{3,4}$/);
+            const tz = tzMatch ? tzMatch[0] : 'CT';
+            return `${formatted} ${tz}`;
           } catch (error) {
             return timestamp;
+          }
+        },
+
+        formatTime(timeStr) {
+          if (!timeStr) return '—';
+          // If it's already formatted with timezone, return as is
+          if (timeStr.includes('CST') || timeStr.includes('CDT')) return timeStr;
+          
+          try {
+            // Try to parse as ISO date or other date format
+            const date = new Date(timeStr);
+            if (isNaN(date.getTime())) {
+              // If not a valid date, return as is
+              return timeStr;
+            }
+            return this.formatTimestamp(date);
+          } catch (error) {
+            return timeStr;
           }
         },
 
