@@ -284,7 +284,7 @@ npm run build
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License; see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -297,6 +297,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ by Rashid Azarang for the community**
 
-⭐ Star us on GitHub — it helps!
+⭐ Star us on GitHub
 
 [**Website**](https://rashidazarang.com/)• [**X**](https://x.com/rashidazarang)
