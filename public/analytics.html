@@ -618,19 +618,14 @@
         formatDate(dateStr) {
           if (!dateStr) return 'N/A';
           const date = new Date(dateStr);
-          // Format in Central Time
+          // Format in Central Time without timezone abbreviation
           const options = {
             timeZone: 'America/Chicago',
             month: 'short',
             day: 'numeric',
             year: 'numeric'
           };
-          const formatted = date.toLocaleDateString('en-US', options);
-          // Get timezone abbreviation
-          const tzOptions = { timeZone: 'America/Chicago', timeZoneName: 'short' };
-          const tzMatch = new Intl.DateTimeFormat('en-US', tzOptions).format(date).match(/[A-Z]{3,4}$/);
-          const tz = tzMatch ? tzMatch[0] : 'CT';
-          return `${formatted} ${tz}`;
+          return date.toLocaleDateString('en-US', options);
         },
         
         formatDayLabel(dateStr) {
