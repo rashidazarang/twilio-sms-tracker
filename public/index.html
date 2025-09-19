@@ -1919,34 +1919,51 @@
         formatTime(timeStr) {
           if (!timeStr) return '—';
           
-          // If the string already looks formatted (contains month names and time), return as is
-          // But only if it doesn't have parsing issues like wrong year
+          // First, try to parse as an ISO date or timestamp
+          if (timeStr.match(/^\d{4}-\d{2}-\d{2}/) || timeStr.match(/^\d{10,13}$/)) {
+            const date = new Date(timeStr);
+            if (!isNaN(date.getTime())) {
+              return this.formatTimestamp(date);
+            }
+          }
+          
+          // If it's a pre-formatted date string like "Sep 20, 03:57 AM" or "Sep 20, 2001, 3:57 AM"
+          // We need to assume the current year and parse it properly
           const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
           const hasMonth = monthNames.some(month => timeStr.includes(month));
           
-          // If it looks like a pre-formatted date but might have wrong year, try to parse and reformat
-          if (hasMonth && (timeStr.includes('2001') || timeStr.includes('2000'))) {
-            // This is likely a mis-parsed date, just return the original time from API
-            return timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT)\s*$/, '').trim();
-          }
-          
-          try {
-            // For ISO dates or timestamps
-            if (timeStr.match(/^\d{4}-\d{2}-\d{2}/) || timeStr.match(/^\d{10,13}$/)) {
-              const date = new Date(timeStr);
+          if (hasMonth) {
+            try {
+              // Remove any timezone abbreviations first
+              let cleanStr = timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT|GMT|UTC)[\+\-\d]*\s*$/, '').trim();
+              
+              // Check if it has a year or not
+              const hasYear = /\d{4}/.test(cleanStr);
+              
+              if (!hasYear) {
+                // Add current year if missing (e.g., "Sep 20, 03:57 AM" -> "Sep 20, 2025, 03:57 AM")
+                const currentYear = new Date().getFullYear();
+                // Insert year after the day
+                cleanStr = cleanStr.replace(/(\w{3}\s+\d{1,2}),?\s+/, `$1, ${currentYear}, `);
+              } else if (cleanStr.includes('2001') || cleanStr.includes('2000')) {
+                // Replace wrong year with current year
+                const currentYear = new Date().getFullYear();
+                cleanStr = cleanStr.replace(/200[01]/, currentYear.toString());
+              }
+              
+              // Now parse the corrected date string
+              const date = new Date(cleanStr);
               if (!isNaN(date.getTime())) {
+                // Convert to Central Time and format
                 return this.formatTimestamp(date);
               }
+            } catch (error) {
+              console.error('Error parsing date:', error, timeStr);
             }
-            
-            // If it's already a formatted date string, clean it up
-            // Remove any timezone abbreviations
-            const cleaned = timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT|GMT|UTC)[\+\-\d]*\s*$/, '').trim();
-            return cleaned;
-          } catch (error) {
-            // Return original string without timezone if present
-            return timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT)\s*$/, '').trim();
           }
+          
+          // Fallback: return cleaned string without timezone
+          return timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT)\s*$/, '').trim();
         },
 
         getPercentageChange() {
