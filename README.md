@@ -15,9 +15,11 @@
 
 ## 🎥 Demo Video
 
-https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4
+[![Watch Demo](https://img.shields.io/badge/▶️_Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4)
 
-Watch our comprehensive walkthrough demonstrating all features and setup process.
+Watch our comprehensive walkthrough demonstrating all features and setup process. Click the button above to play the video.
+
+> **Note:** To see the video embedded directly in this README, you can [edit this file on GitHub](https://github.com/rashidazarang/twilio-sms-tracker/edit/main/README.md) and drag-drop the `demo-video.mp4` file where you want it to appear. GitHub will automatically create an embedded player.
 
 ## 📸 Screenshots
 
