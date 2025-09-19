@@ -15,7 +15,7 @@
 
 ## 🎥 Demo Video
 
-[demo-video.mp4](./demo-video.mp4)
+https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4
 
 Watch our comprehensive walkthrough demonstrating all features and setup process.
 
