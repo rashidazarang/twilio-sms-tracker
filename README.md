@@ -296,19 +296,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - SMS delivery by [Twilio](https://www.twilio.com)
 - Icons from [Heroicons](https://heroicons.com)
 
-## 📞 Support
-
-| Type | Link |
-|------|------|
-| 💬 **Discussions** | [GitHub Discussions](https://github.com/rashidazarang/twilio-sms-tracker/discussions) |
-| 🐛 **Bug Reports** | [GitHub Issues](https://github.com/rashidazarang/twilio-sms-tracker/issues) |
-| 📧 **Email** | support@example.com |
-| 📖 **Docs** | [Documentation](https://github.com/rashidazarang/twilio-sms-tracker/wiki) |
-
 ---
 
-**Built with ❤️ for the business community**
+**Built with ❤️ by Rashid Azarang for the community**
 
 ⭐ Star us on GitHub — it helps!
 
-[**Website**](https://example.com) • [**Blog**](https://blog.example.com) • [**Twitter**](https://twitter.com/example)
+[**Website**](https://rashidazarang.com/)• [**X**](https://x.com/rashidazarang)
