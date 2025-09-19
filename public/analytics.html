@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - Paper Workflows</title>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #3B82F6;
+      --primary-hover: #2563EB;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --text-muted: #9CA3AF;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F9FAFB;
+      --bg-tertiary: #F3F4F6;
+      --border: #E5E7EB;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Copy same core styles */
+    .app-container { display: flex; height: 100vh; overflow: hidden; }
+    .sidebar { width: 240px; background: var(--bg-primary); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease; }
+    .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .logo { width: 36px; height: 36px; background: var(--primary); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px; }
+    .logo-text { font-weight: 600; font-size: 16px; }
+    .logo-subtitle { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+    .nav-section { padding: 16px 0; }
+    .nav-label { padding: 8px 20px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .nav-item.active { background: #EFF6FF; color: var(--primary); position: relative; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary); }
+    .nav-icon { width: 20px; height: 20px; opacity: 0.6; }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .header { background: var(--bg-primary); border-bottom: 1px solid var(--border); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .header-title { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+    .header-desc { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      transition: all 0.15s ease;
+    }
+    
+    .stat-card:hover {
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .stat-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    /* Analytics Cards */
+    .analytics-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .card-content {
+      padding: 24px;
+    }
+    
+    /* Charts */
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+    
+    .chart-bar {
+      display: flex;
+      align-items: flex-end;
+      height: 250px;
+      gap: 12px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .bar-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .bar {
+      width: 100%;
+      background: linear-gradient(180deg, var(--primary), var(--primary-hover));
+      border-radius: 4px 4px 0 0;
+      transition: all 0.3s ease;
+      position: relative;
+      min-height: 4px;
+    }
+    
+    .bar:hover {
+      opacity: 0.8;
+    }
+    
+    .bar-value {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .bar-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+    
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    
+    td {
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    tr:hover {
+      background: var(--bg-tertiary);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-success {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    
+    .badge-danger {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+    
+    .spinner {
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .empty-state {
+      padding: 48px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    
+    /* Hour Distribution */
+    .hour-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+    
+    .hour-block {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    
+    .hour-block:hover {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .hour-time {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .hour-count {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .menu-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .app-container { flex-direction: column; }
+      .sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .content { padding: 16px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .hour-grid { grid-template-columns: repeat(3, 1fr); }
+      
+      .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .hour-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" x-data="analytics()" x-init="init()">
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" @click="sidebarOpen = !sidebarOpen">
+      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" :class="{'open': sidebarOpen}">
+      <div class="sidebar-header">
+        <div class="logo">S</div>
+        <div>
+          <div class="logo-text">Paper Workflows</div>
+          <div class="logo-subtitle">SMS Dashboard</div>
+        </div>
+      </div>
+      
+      <nav class="nav-section">
+        <div class="nav-label">Navigation</div>
+        <a href="/index.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/messages.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+          </svg>
+          Messages
+        </a>
+        <a href="/analytics.html" class="nav-item active">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Analytics
+        </a>
+      </nav>
+      
+      <nav class="nav-section" style="margin-top: auto;">
+        <a href="/settings.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div>
+          <h1 class="header-title">Analytics</h1>
+          <p class="header-desc">SMS performance metrics and delivery trends</p>
+        </div>
+        <button class="btn btn-secondary" @click="fetchData()">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Refresh
+        </button>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <!-- Loading State -->
+        <div x-show="loading">
+          <div class="spinner"></div>
+        </div>
+        
+        <!-- Analytics Content -->
+        <div x-show="!loading">
+          <!-- Overall Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Messages</div>
+              <div class="stat-value" x-text="data.overall.total_messages || 0"></div>
+              <div class="stat-desc">All time</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">Success Rate</div>
+              <div class="stat-value">
+                <span x-text="successRate"></span>%
+              </div>
+              <div class="stat-desc">Messages undelivered</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">Failed Messages</div>
+              <div class="stat-value" x-text="data.overall.failed_count || 0"></div>
+              <div class="stat-desc">Need attention</div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">Active Since</div>
+              <div class="stat-value" x-text="formatDate(data.overall.first_message)"></div>
+              <div class="stat-desc">Messages undelivered</div>
+            </div>
+          </div>
+          
+          <!-- Daily Activity Chart -->
+          <div class="analytics-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Daily Activity (Last 7 Days)
+              </h2>
+            </div>
+            <div class="card-content">
+              <div class="chart-bar">
+                <template x-for="day in data.daily" :key="day.date">
+                  <div class="bar-column">
+                    <div class="bar" :style="`height: ${getBarHeight(day.count)}%`">
+                      <div class="bar-value" x-text="day.count"></div>
+                    </div>
+                    <div class="bar-label" x-text="formatDayLabel(day.date)"></div>
+                  </div>
+                </template>
+              </div>
+              <div x-show="!data.daily || data.daily.length === 0" class="empty-state">
+                <div>No activity in the last 7 days</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Top Dealerships -->
+          <div class="analytics-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                Top Dealerships
+              </h2>
+            </div>
+            <div class="card-content">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Dealership</th>
+                      <th>Messages Sent</th>
+                      <th>Success Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="dealer in data.topDealers" :key="dealer.dealership_name">
+                      <tr>
+                        <td x-text="dealer.dealership_name || 'Unknown'"></td>
+                        <td x-text="dealer.message_count"></td>
+                        <td>
+                          <span class="badge" :class="dealer.sent_count > 0 ? 'badge-success' : 'badge-danger'">
+                            <span x-text="getDealerSuccessRate(dealer)"></span>%
+                          </span>
+                        </td>
+                      </tr>
+                    </template>
+                    <tr x-show="!data.topDealers || data.topDealers.length === 0">
+                      <td colspan="3" class="empty-state">No dealership data available</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Hourly Distribution -->
+          <div class="analytics-card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Hourly Distribution (Central Time)
+              </h2>
+            </div>
+            <div class="card-content">
+              <div class="hour-grid">
+                <template x-for="hour in formattedHours" :key="hour.hour">
+                  <div class="hour-block">
+                    <div class="hour-time" x-text="hour.label"></div>
+                    <div class="hour-count" x-text="hour.count"></div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function analytics() {
+      return {
+        loading: true,
+        sidebarOpen: false,
+        data: {
+          overall: {},
+          daily: [],
+          topDealers: [],
+          hourlyDistribution: []
+        },
+        successRate: 0,
+        formattedHours: [],
+        
+        async init() {
+          await this.fetchData();
+        },
+        
+        async fetchData() {
+          try {
+            this.loading = true;
+            const response = await fetch('/api/analytics');
+            if (!response.ok) throw new Error('Failed to fetch analytics');
+            
+            this.data = await response.json();
+            
+            // Calculate success rate
+            const total = parseInt(this.data.overall.total_messages) || 0;
+            const sent = parseInt(this.data.overall.sent_count) || 0;
+            this.successRate = total > 0 ? Math.round((sent / total) * 100) : 0;
+            
+            // Format hourly distribution
+            this.formattedHours = this.formatHourlyData();
+            
+          } catch (error) {
+            console.error('Error fetching analytics:', error);
+          } finally {
+            this.loading = false;
+          }
+        },
+        
+        formatHourlyData() {
+          const hours = [];
+          for (let i = 0; i < 24; i++) {
+            const hourData = this.data.hourlyDistribution.find(h => parseInt(h.hour) === i);
+            const count = hourData ? parseInt(hourData.count) : 0;
+            const label = i === 0 ? '12 AM' : i === 12 ? '12 PM' : i < 12 ? `${i} AM` : `${i - 12} PM`;
+            hours.push({ hour: i, label, count });
+          }
+          return hours;
+        },
+        
+        getBarHeight(count) {
+          if (!this.data.daily || this.data.daily.length === 0) return 0;
+          const maxCount = Math.max(...this.data.daily.map(d => parseInt(d.count)));
+          return maxCount > 0 ? (count / maxCount) * 100 : 0;
+        },
+        
+        formatDate(dateStr) {
+          if (!dateStr) return 'N/A';
+          const date = new Date(dateStr);
+          return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        },
+        
+        formatDayLabel(dateStr) {
+          if (!dateStr) return '';
+          const date = new Date(dateStr);
+          return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        },
+        
+        getDealerSuccessRate(dealer) {
+          const total = parseInt(dealer.message_count) || 0;
+          const sent = parseInt(dealer.sent_count) || 0;
+          return total > 0 ? Math.round((sent / total) * 100) : 0;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Paper Workflows</title>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #3B82F6;
+      --primary-hover: #2563EB;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --text-muted: #9CA3AF;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F9FAFB;
+      --bg-tertiary: #F3F4F6;
+      --border: #E5E7EB;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Copy same styles from messages.html */
+    .app-container { display: flex; height: 100vh; overflow: hidden; }
+    .sidebar { width: 240px; background: var(--bg-primary); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s ease; }
+    .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .logo { width: 36px; height: 36px; background: var(--primary); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px; }
+    .logo-text { font-weight: 600; font-size: 16px; }
+    .logo-subtitle { font-size: 11px; color: var(--text-secondary); font-weight: 400; }
+    .nav-section { padding: 16px 0; }
+    .nav-label { padding: 8px 20px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.15s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .nav-item.active { background: #EFF6FF; color: var(--primary); position: relative; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary); }
+    .nav-icon { width: 20px; height: 20px; opacity: 0.6; }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .header { background: var(--bg-primary); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .header-title { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+    .header-desc { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+    .btn { padding: 8px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s ease; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--bg-tertiary); }
+    
+    /* Settings specific styles */
+    .settings-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .settings-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .settings-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .settings-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      transition: all 0.15s ease;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-input:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+    
+    .url-builder {
+      margin-top: 12px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    
+    .url-builder-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    
+    .url-display {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      word-break: break-all;
+      margin-bottom: 12px;
+    }
+    
+    .variable-chips {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .variable-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      background: #EFF6FF;
+      color: var(--primary);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid #DBEAFE;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .variable-chip:hover {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .copy-btn {
+      padding: 6px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    
+    .copy-btn:hover {
+      background: var(--bg-tertiary);
+    }
+    
+    .copy-btn.copied {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+    
+    .webhook-test {
+      margin-top: 16px;
+      padding: 16px;
+      background: #FEF3C7;
+      border: 1px solid #FCD34D;
+      border-radius: var(--radius);
+    }
+    
+    .webhook-test-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #92400E;
+      margin-bottom: 8px;
+    }
+    
+    .test-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .test-btn {
+      padding: 6px 12px;
+      background: white;
+      border: 1px solid #FCD34D;
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: #92400E;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .test-btn:hover {
+      background: #FEF3C7;
+    }
+    
+    .info-box {
+      background: #EFF6FF;
+      border: 1px solid #DBEAFE;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .info-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .info-box-content {
+      font-size: 13px;
+      color: #1E40AF;
+      line-height: 1.6;
+    }
+    
+    .api-key-section {
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+    
+    .api-key-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    
+    .api-key-value {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .alert-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .alert-error {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .spinner {
+      border: 3px solid var(--border);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .app-container { flex-direction: column; }
+      .sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transform: translateX(-100%); box-shadow: var(--shadow-md); width: 240px; }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      .content { padding: 16px; }
+      .header { padding: 16px; }
+      .variable-chips { flex-wrap: wrap; gap: 8px; }
+      .variable-chip { flex: 1; min-width: calc(50% - 4px); text-align: center; }
+      .test-buttons { flex-direction: column; }
+      .test-buttons button { width: 100%; }
+      .url-display { font-size: 12px; padding: 12px; }
+      .settings-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" x-data="settingsConfig()" x-init="init()">
+    <!-- Sidebar -->
+    <aside class="sidebar" :class="{'open': sidebarOpen}">
+      <div class="sidebar-header">
+        <div class="logo">S</div>
+        <div>
+          <div class="logo-text">Paper Workflows</div>
+          <div class="logo-subtitle">SMS Dashboard</div>
+        </div>
+      </div>
+      
+      <nav class="nav-section">
+        <div class="nav-label">Navigation</div>
+        <a href="/index.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/messages.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+          </svg>
+          Messages
+        </a>
+        <a href="/analytics.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Analytics
+        </a>
+      </nav>
+      
+      <nav class="nav-section" style="margin-top: auto;">
+        <a href="/settings.html" class="nav-item active">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div>
+          <h1 class="header-title">Settings</h1>
+          <p class="header-desc">Configure webhook endpoints and system settings</p>
+        </div>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <!-- Success/Error Messages -->
+        <div x-show="successMessage" class="alert alert-success" x-transition>
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span x-text="successMessage"></span>
+        </div>
+        
+        <div x-show="errorMessage" class="alert alert-error" x-transition>
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span x-text="errorMessage"></span>
+        </div>
+        
+        <!-- Loading State -->
+        <div x-show="loading">
+          <div class="spinner"></div>
+        </div>
+        
+        <!-- Settings Content -->
+        <div x-show="!loading">
+          <!-- Webhook Configuration -->
+          <div class="settings-card">
+            <div class="settings-header">
+              <h2 class="settings-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+                Webhook Configuration
+              </h2>
+              <p class="settings-subtitle">Configure the endpoint URL for receiving transaction completion notifications</p>
+            </div>
+            
+            <!-- Simplified Info -->
+            <div class="info-box" style="background: var(--info-bg, #E6F3FF); border-left: 3px solid var(--primary); padding: 12px; margin-bottom: 20px;">
+              <div style="display: flex; align-items: start; gap: 8px;">
+                <svg width="16" height="16" fill="none" stroke="var(--primary)" viewBox="0 0 24 24" style="flex-shrink: 0; margin-top: 2px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div style="font-size: 13px; color: var(--text-primary); line-height: 1.5;">
+                  POST to webhook URL with optional <code style="background: white; padding: 2px 4px; border-radius: 3px;">customer_name</code> and <code style="background: white; padding: 2px 4px; border-radius: 3px;">dealership_name</code> parameters
+                </div>
+              </div>
+            </div>
+            
+            <!-- Base URL -->
+            <div class="form-group">
+              <label class="form-label">Base Webhook URL</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                x-model="baseUrl"
+                readonly
+                disabled>
+              <p class="form-hint">This is your webhook endpoint base URL</p>
+            </div>
+            
+            <!-- URL Builder -->
+            <div class="url-builder">
+              <div class="url-builder-label">Dynamic URL Builder</div>
+              
+              <!-- Variable Chips -->
+              <div class="variable-chips">
+                <div class="variable-chip" @click="addVariable('customer_name')">
+                  + {customer_name}
+                </div>
+                <div class="variable-chip" @click="addVariable('dealership_name')">
+                  + {dealership_name}
+                </div>
+              </div>
+              
+              <!-- Built URL Display -->
+              <div class="url-display" x-text="builtUrl"></div>
+              
+              <!-- Copy Button -->
+              <button class="copy-btn" :class="{'copied': copied}" @click="copyUrl()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                </svg>
+                <span x-text="copied ? 'Copied!' : 'Copy URL'"></span>
+              </button>
+              
+              <!-- Compact Examples -->
+              <details style="margin-top: 16px;">
+                <summary style="cursor: pointer; color: var(--primary); font-size: 13px; font-weight: 600;">View Examples →</summary>
+                <div style="margin-top: 12px; padding: 12px; background: var(--bg-secondary); border-radius: 8px; font-size: 12px;">
+                  <div style="font-family: monospace; color: var(--text-primary); word-break: break-all;" x-text="`${baseUrl}?customer_name=John+Smith&dealership_name=Bob's+Auto`"></div>
+                </div>
+              </details>
+            </div>
+            
+            <!-- API Key Section -->
+            <div class="api-key-section">
+              <div class="api-key-label">Required API Key</div>
+              <div class="api-key-value">
+                <span>sms-webhook-secure-2024</span>
+                <button class="copy-btn" @click="copyApiKey()">
+                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <p class="form-hint" style="margin-top: 8px;">Include this in the x-api-key header of your POST request</p>
+            </div>
+            
+            <!-- Test Webhook -->
+            <div class="webhook-test">
+              <div class="webhook-test-title">Test Webhook</div>
+              <p style="font-size: 13px; color: #92400E; margin-bottom: 12px;">
+                Send a test webhook with sample data to verify configuration
+              </p>
+              <div class="test-buttons">
+                <button class="test-btn" @click="testWebhook('default')">
+                  Test with Defaults
+                </button>
+                <button class="test-btn" @click="testWebhook('custom')">
+                  Test with Custom Data
+                </button>
+                <button class="test-btn" @click="testWebhook('no-params')">
+                  Test without Parameters
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Default Values Configuration -->
+          <div class="settings-card">
+            <div class="settings-header">
+              <h2 class="settings-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+                Default Values
+              </h2>
+              <p class="settings-subtitle">Configure fallback values when parameters are not provided</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Default Dealership Name</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                x-model="config.default_dealership"
+                placeholder="America First">
+              <p class="form-hint">Used when dealership_name parameter is not provided</p>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Default Customer Name</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                x-model="config.default_customer"
+                placeholder="Leave empty for undefined">
+              <p class="form-hint">Used when customer_name parameter is not provided (leave empty for undefined)</p>
+            </div>
+            
+            <button class="btn btn-primary" @click="saveConfig()">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              Save Configuration
+            </button>
+          </div>
+          
+          <!-- Request Format -->
+          <div class="settings-card">
+            <div class="settings-header">
+              <h2 class="settings-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                </svg>
+                Request Format
+              </h2>
+              <p class="settings-subtitle">Example webhook request structure</p>
+            </div>
+            
+            <div style="background: #1F2937; color: #F9FAFB; padding: 20px; border-radius: var(--radius); font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; overflow-x: auto;">
+              <div style="color: #60A5FA;">// POST Request Example</div>
+              <div style="color: #34D399;">POST <span x-text="baseUrl + '?customer_name=John+Smith&dealership_name=Bob\\'s+Auto'"></span></div>
+              <div style="margin-top: 12px; color: #60A5FA;">// Headers</div>
+              <div>{</div>
+              <div style="margin-left: 20px;">
+                <span style="color: #FCA5A5;">"Content-Type"</span>: <span style="color: #FDE68A;">"application/json"</span>,
+              </div>
+              <div style="margin-left: 20px;">
+                <span style="color: #FCA5A5;">"x-api-key"</span>: <span style="color: #FDE68A;">"sms-webhook-secure-2024"</span>
+              </div>
+              <div>}</div>
+              <div style="margin-top: 12px; color: #60A5FA;">// Body</div>
+              <div>{</div>
+              <div style="margin-left: 20px;">
+                <span style="color: #FCA5A5;">"transactionId"</span>: <span style="color: #FDE68A;">"TXN-123456"</span>,
+              </div>
+              <div style="margin-left: 20px;">
+                <span style="color: #FCA5A5;">"customerPhone"</span>: <span style="color: #FDE68A;">"+14155172054"</span>,
+              </div>
+              <div style="margin-left: 20px;">
+                <span style="color: #FCA5A5;">"amount"</span>: <span style="color: #A78BFA;">299.99</span>
+              </div>
+              <div>}</div>
+              <div style="margin-top: 12px; color: #60A5FA;">// Note: customer_name and dealership_name come from URL parameters</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function settingsConfig() {
+      return {
+        loading: false,
+        sidebarOpen: false,
+        successMessage: '',
+        errorMessage: '',
+        copied: false,
+        baseUrl: 'https://sms-feedback-system-8xa1.vercel.app/webhook/transaction-complete',
+        builtUrl: '',
+        urlParams: [],
+        config: {
+          default_dealership: 'America First',
+          default_customer: ''
+        },
+        
+        init() {
+          this.builtUrl = this.baseUrl;
+          this.loadConfig();
+        },
+        
+        async loadConfig() {
+          try {
+            // Load saved configuration from API if exists
+            const response = await fetch('/api/settings');
+            if (response.ok) {
+              const data = await response.json();
+              this.config = {
+                default_dealership: data.default_dealership || 'America First',
+                default_customer: data.default_customer || ''
+              };
+            }
+          } catch (error) {
+            console.log('No saved configuration found, using defaults');
+          }
+        },
+        
+        async saveConfig() {
+          try {
+            this.successMessage = '';
+            this.errorMessage = '';
+            
+            const response = await fetch('/api/settings', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(this.config)
+            });
+            
+            if (response.ok) {
+              this.successMessage = 'Configuration saved successfully!';
+              setTimeout(() => this.successMessage = '', 3000);
+            } else {
+              this.errorMessage = 'Failed to save configuration';
+              setTimeout(() => this.errorMessage = '', 3000);
+            }
+          } catch (error) {
+            this.errorMessage = 'Error saving configuration';
+            setTimeout(() => this.errorMessage = '', 3000);
+          }
+        },
+        
+        addVariable(variable) {
+          if (!this.urlParams.includes(variable)) {
+            this.urlParams.push(variable);
+            this.updateBuiltUrl();
+          }
+        },
+        
+        updateBuiltUrl() {
+          if (this.urlParams.length === 0) {
+            this.builtUrl = this.baseUrl;
+          } else {
+            const params = this.urlParams.map(param => {
+              const value = param === 'customer_name' ? 'John+Smith' : 'Your+Dealership';
+              return `${param}=${value}`;
+            }).join('&');
+            this.builtUrl = `${this.baseUrl}?${params}`;
+          }
+        },
+        
+        async copyUrl() {
+          try {
+            await navigator.clipboard.writeText(this.builtUrl);
+            this.copied = true;
+            setTimeout(() => this.copied = false, 2000);
+          } catch (err) {
+            console.error('Failed to copy URL');
+          }
+        },
+        
+        async copyApiKey() {
+          try {
+            await navigator.clipboard.writeText('sms-webhook-secure-2024');
+            alert('API key copied to clipboard!');
+          } catch (err) {
+            console.error('Failed to copy API key');
+          }
+        },
+        
+        async testWebhook(type) {
+          let url = this.baseUrl;
+          let customerName = '';
+          let dealershipName = '';
+          
+          if (type === 'custom') {
+            customerName = prompt('Enter customer name:', 'John Smith');
+            dealershipName = prompt('Enter dealership name:', 'Test Dealership');
+            if (customerName && dealershipName) {
+              url = `${this.baseUrl}?customer_name=${encodeURIComponent(customerName)}&dealership_name=${encodeURIComponent(dealershipName)}`;
+            } else {
+              return;
+            }
+          } else if (type === 'default') {
+            url = `${this.baseUrl}?customer_name=Test+Customer&dealership_name=Test+Dealership`;
+            customerName = 'Test Customer';
+            dealershipName = 'Test Dealership';
+          }
+          // type === 'no-params' uses base URL without parameters
+          
+          const testData = {
+            transactionId: 'TEST-' + Date.now(),
+            customerPhone: '+14155172054',
+            customerName: customerName || undefined,
+            dealershipName: dealershipName || this.config.default_dealership,
+            amount: 299.99
+          };
+          
+          try {
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'sms-webhook-secure-2024'
+              },
+              body: JSON.stringify(testData)
+            });
+            
+            if (response.ok) {
+              const result = await response.json();
+              alert(`Webhook test successful!\n\nTransaction ID: ${testData.transactionId}\nCustomer: ${testData.customerName || 'undefined'}\nDealership: ${testData.dealershipName}\n\nResponse: ${JSON.stringify(result, null, 2)}`);
+            } else {
+              const error = await response.text();
+              alert(`Webhook test failed!\n\nStatus: ${response.status}\nError: ${error}`);
+            }
+          } catch (error) {
+            alert(`Webhook test error!\n\n${error.message}`);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Paper Workflows</title>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #3B82F6;
+      --primary-hover: #2563EB;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F9FAFB;
+      --border: #E5E7EB;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --success: #10B981;
+      --error: #EF4444;
+      --info: #3B82F6;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+    }
+
+    .nav-section {
+      padding: 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: #EEF2FF;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+
+    .header-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .menu-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Content Area */
+    .content {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+      color: var(--text-primary);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--bg-secondary);
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: var(--bg-primary);
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-primary);
+    }
+
+    /* Info Box */
+    .info-box {
+      background: #F0F9FF;
+      border-left: 3px solid var(--info);
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .info-box-content {
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* URL Display */
+    .url-display {
+      background: white;
+      padding: 14px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      word-break: break-all;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .param-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .param-btn {
+      padding: 6px 12px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .param-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .param-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+
+    /* API Key Section */
+    .api-key-box {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      padding: 16px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #FCD34D;
+    }
+
+    .api-key-value {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    /* Alert Messages */
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-success {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .alert-error {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .header {
+        padding: 16px;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .param-buttons {
+        flex-direction: column;
+      }
+
+      .param-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* Overlay for mobile menu */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 50;
+    }
+
+    .mobile-overlay.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" x-data="settings()" x-init="init()">
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" @click="mobileMenuOpen = !mobileMenuOpen">
+      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+    
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" :class="{'show': mobileMenuOpen}" @click="mobileMenuOpen = false"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" :class="{'open': mobileMenuOpen}">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">S</div>
+          <div>
+            <div style="font-size: 16px;">Paper Workflows</div>
+            <div style="font-size: 11px; color: var(--text-secondary); font-weight: 400;">SMS Dashboard</div>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="nav-section">
+        <a href="/index.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/messages.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+          </svg>
+          Messages
+        </a>
+        <a href="/analytics.html" class="nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Analytics
+        </a>
+      </nav>
+      
+      <nav class="nav-section" style="margin-top: auto;">
+        <a href="/settings.html" class="nav-item active">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div>
+          <h1 class="header-title">Settings</h1>
+          <p class="header-desc">Webhook configuration</p>
+        </div>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <!-- Success/Error Messages -->
+        <div x-show="successMessage" class="alert alert-success" x-transition>
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span x-text="successMessage"></span>
+        </div>
+        
+        <!-- Webhook URL Card -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+            </svg>
+            Webhook URL
+          </h2>
+          
+          <div class="form-group">
+            <label class="form-label">Webhook Endpoint</label>
+            <div class="url-display" style="margin-bottom: 12px;">
+              <span style="color: #6B7280;">POST</span>
+              <span x-text="fullUrl"></span>
+            </div>
+            <p class="form-hint">Send POST requests to this endpoint with optional URL parameters</p>
+          </div>
+          
+          <!-- Parameters Info -->
+          <div class="info-box" style="margin-top: 16px;">
+            <div class="info-box-content">
+              <strong>Available URL Parameters:</strong>
+              <div style="margin-top: 8px; font-family: monospace; font-size: 12px;">
+                <div style="margin-bottom: 4px;">• customer_name={string} - Customer's full name</div>
+                <div>• dealership_name={string} - Dealership name (default: America First)</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Example URL -->
+          <div style="margin-top: 16px;">
+            <label class="form-label">Example with parameters:</label>
+            <div class="url-display" style="background: #F9FAFB; border: 1px dashed #D1D5DB; color: #6B7280; font-size: 11px;">
+              <span x-text="exampleUrl"></span>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary" style="margin-top: 16px;" @click="copyUrl()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+            </svg>
+            <span x-text="copied ? 'Copied!' : 'Copy Webhook URL'"></span>
+          </button>
+        </div>
+        
+        <!-- Request Format Card -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Request Format
+          </h2>
+          
+          <!-- Headers -->
+          <div style="margin-bottom: 20px;">
+            <label class="form-label">Required Headers</label>
+            <div style="background: #F9FAFB; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px;">
+              <div style="color: #6B7280;">Content-Type: application/json</div>
+              <div style="color: #6B7280;">x-api-key: <span style="color: var(--text-primary); background: #FEF3C7; padding: 2px 4px; border-radius: 3px;">sms-webhook-secure-2024</span></div>
+            </div>
+          </div>
+          
+          <!-- Request Body -->
+          <div>
+            <label class="form-label">Request Body (JSON)</label>
+            <pre style="background: #1F2937; color: #F3F4F6; padding: 16px; border-radius: 8px; font-size: 12px; overflow-x: auto; margin: 0;">{
+  "transactionId": "TEST-1234567890",
+  "customerPhone": "+14155552671",
+  "customerName": "John Doe",     <span style="color: #9CA3AF;">// Optional, or use URL param</span>
+  "dealershipName": "ABC Motors",  <span style="color: #9CA3AF;">// Optional, or use URL param</span>
+  "amount": 299.99                 <span style="color: #9CA3AF;">// Optional</span>
+}</pre>
+          </div>
+          
+          <p class="form-hint" style="margin-top: 12px;">URL parameters override body values if both are provided</p>
+        </div>
+        
+        <!-- API Key Card -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+            </svg>
+            API Key
+          </h2>
+          
+          <div class="api-key-box">
+            <span class="api-key-value">sms-webhook-secure-2024</span>
+            <button class="btn btn-secondary" @click="copyApiKey()">Copy Key</button>
+          </div>
+          <p class="form-hint">Include this key in the x-api-key header for authentication</p>
+        </div>
+        
+        <!-- Test Webhook Card -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Test Webhook
+          </h2>
+          
+          <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+            Send a test request to verify your webhook is working correctly
+          </p>
+          
+          <button class="btn btn-primary" @click="testWebhook()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+            </svg>
+            Send Test Request
+          </button>
+          
+          <div x-show="testResult" x-transition class="alert" :class="testSuccess ? 'alert-success' : 'alert-error'" style="margin-top: 16px;">
+            <span x-text="testResult"></span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    function settings() {
+      return {
+        mobileMenuOpen: false,
+        baseUrl: 'https://sms-feedback-system-8xa1.vercel.app/webhook/transaction-complete',
+        fullUrl: 'https://sms-feedback-system-8xa1.vercel.app/webhook/transaction-complete',
+        exampleUrl: 'https://sms-feedback-system-8xa1.vercel.app/webhook/transaction-complete?customer_name=John%20Doe&dealership_name=ABC%20Motors',
+        copied: false,
+        successMessage: '',
+        testResult: '',
+        testSuccess: false,
+        
+        init() {
+          // Auto-hide mobile menu on resize
+          window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+              this.mobileMenuOpen = false;
+            }
+          });
+        },
+        
+        
+        async copyUrl() {
+          try {
+            await navigator.clipboard.writeText(this.baseUrl);
+            this.copied = true;
+            setTimeout(() => this.copied = false, 2000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+          }
+        },
+        
+        async copyApiKey() {
+          try {
+            await navigator.clipboard.writeText('sms-webhook-secure-2024');
+            this.successMessage = 'API key copied to clipboard';
+            setTimeout(() => this.successMessage = '', 3000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+          }
+        },
+        
+        async testWebhook() {
+          this.testResult = '';
+          try {
+            const response = await fetch('/api/webhook/transaction-complete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'sms-webhook-secure-2024'
+              },
+              body: JSON.stringify({
+                transactionId: 'TEST-' + Date.now(),
+                customerPhone: '+14155552671',
+                customerName: 'Test Customer',
+                dealershipName: 'Test Dealership',
+                amount: 299.99
+              })
+            });
+            
+            const data = await response.json();
+            if (response.ok) {
+              this.testSuccess = true;
+              this.testResult = 'Webhook test successful! Transaction received.';
+            } else {
+              this.testSuccess = false;
+              this.testResult = `Test failed: ${data.error || 'Unknown error'}`;
+            }
+            
+            setTimeout(() => this.testResult = '', 5000);
+          } catch (err) {
+            this.testSuccess = false;
+            this.testResult = 'Test failed: Network error';
+            setTimeout(() => this.testResult = '', 5000);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
