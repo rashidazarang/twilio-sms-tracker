@@ -1927,43 +1927,20 @@
             }
           }
           
-          // If it's a pre-formatted date string like "Sep 20, 03:57 AM" or "Sep 20, 2001, 3:57 AM"
-          // We need to assume the current year and parse it properly
-          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          const hasMonth = monthNames.some(month => timeStr.includes(month));
+          // The API now returns properly formatted dates in Central Time
+          // Format: "Sep 19, 2025, 05:57 PM"
+          // Just clean up any timezone abbreviations and return
+          const cleaned = timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT|GMT|UTC)[\+\-\d]*\s*$/, '').trim();
           
-          if (hasMonth) {
-            try {
-              // Remove any timezone abbreviations first
-              let cleanStr = timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT|GMT|UTC)[\+\-\d]*\s*$/, '').trim();
-              
-              // Check if it has a year or not
-              const hasYear = /\d{4}/.test(cleanStr);
-              
-              if (!hasYear) {
-                // Add current year if missing (e.g., "Sep 20, 03:57 AM" -> "Sep 20, 2025, 03:57 AM")
-                const currentYear = new Date().getFullYear();
-                // Insert year after the day
-                cleanStr = cleanStr.replace(/(\w{3}\s+\d{1,2}),?\s+/, `$1, ${currentYear}, `);
-              } else if (cleanStr.includes('2001') || cleanStr.includes('2000')) {
-                // Replace wrong year with current year
-                const currentYear = new Date().getFullYear();
-                cleanStr = cleanStr.replace(/200[01]/, currentYear.toString());
-              }
-              
-              // Now parse the corrected date string
-              const date = new Date(cleanStr);
-              if (!isNaN(date.getTime())) {
-                // Convert to Central Time and format
-                return this.formatTimestamp(date);
-              }
-            } catch (error) {
-              console.error('Error parsing date:', error, timeStr);
-            }
-          }
+          // Convert month abbreviations to full names if needed
+          const monthMap = {
+            'Jan': 'Jan', 'Feb': 'Feb', 'Mar': 'Mar', 'Apr': 'Apr',
+            'May': 'May', 'Jun': 'Jun', 'Jul': 'Jul', 'Aug': 'Aug',
+            'Sep': 'Sep', 'Oct': 'Oct', 'Nov': 'Nov', 'Dec': 'Dec'
+          };
           
-          // Fallback: return cleaned string without timezone
-          return timeStr.replace(/,?\s*(CST|CDT|CT|EST|EDT|PST|PDT)\s*$/, '').trim();
+          // Return the cleaned, properly formatted date from the API
+          return cleaned;
         },
 
         getPercentageChange() {
