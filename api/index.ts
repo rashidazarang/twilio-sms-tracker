@@ -316,7 +316,7 @@ app.get('/api/dashboard', async (req, res) => {
         amount,
         sms_sent,
         sms_sent_at,
-        TO_CHAR(created_at AT TIME ZONE 'America/Chicago', 'Mon DD, YYYY, HH12:MI AM') as formatted_time,
+        TO_CHAR((created_at AT TIME ZONE 'UTC') AT TIME ZONE 'America/Chicago', 'Mon DD, YYYY, HH12:MI PM') as formatted_time,
         created_at
       FROM transactions
       ORDER BY created_at DESC
