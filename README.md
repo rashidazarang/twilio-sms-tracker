@@ -2,6 +2,7 @@
 
 ## Open-Source SMS Communication Management System
 
+[![Watch Demo](https://img.shields.io/badge/▶️_Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker&env=DATABASE_URL,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER&envDescription=Required%20environment%20variables&envLink=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker%23environment-variables&project-name=twilio-sms-tracker&repository-name=twilio-sms-tracker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
@@ -14,10 +15,6 @@
 ---
 
 ## 🎥 Demo Video
-
-[![Watch Demo](https://img.shields.io/badge/▶️_Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/rashidazarang/twilio-sms-tracker/raw/main/demo-video.mp4)
-
-Watch the walkthrough demonstrating all features and setup process.
 
 https://github.com/user-attachments/assets/b1136e98-fa81-4155-b0ab-f4760dbee0ca
 
