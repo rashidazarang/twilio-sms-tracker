@@ -627,6 +627,10 @@
   </div>
 
   <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('settingsConfig', () => settingsConfig());
+    });
+    
     function settingsConfig() {
       return {
         loading: false,

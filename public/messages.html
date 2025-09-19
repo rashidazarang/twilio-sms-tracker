@@ -457,6 +457,10 @@
   </div>
 
   <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('messagesConfig', () => messagesConfig());
+    });
+    
     function messagesConfig() {
       return {
         loading: true,

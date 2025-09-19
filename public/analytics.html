@@ -542,6 +542,10 @@
   </div>
 
   <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('analytics', () => analytics());
+    });
+    
     function analytics() {
       return {
         loading: true,

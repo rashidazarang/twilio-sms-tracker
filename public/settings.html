@@ -608,6 +608,10 @@
   </div>
   
   <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('settings', () => settings());
+    });
+    
     function settings() {
       return {
         mobileMenuOpen: false,

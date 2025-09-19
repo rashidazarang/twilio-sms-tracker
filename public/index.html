@@ -1730,6 +1730,10 @@
   </div>
 
   <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('dashboard', () => dashboard());
+    });
+    
     function dashboard() {
       return {
         sidebarOpen: false,
@@ -2013,7 +2017,7 @@
           this.sendingTestSms = true;
           this.testSmsError = '';
 
-          const payload: any = {
+          const payload = {
             phone: this.testSmsForm.phone.trim()
           };
 
