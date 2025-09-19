@@ -1,0 +1,64 @@
+# Source files (only publish compiled)
+src/
+tests/
+__tests__/
+
+# Configuration files
+.env
+.env.*
+*.env
+tsconfig.json
+jest.config.js
+.eslintrc.json
+.prettierrc
+
+# Version control
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Dev dependencies
+node_modules/
+.npm
+
+# Documentation
+*.md
+!README.md
+docs/
+database/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.circleci/
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Vercel
+.vercel/
+vercel.json
+api/
+
+# Public files (HTML dashboard)
+public/
+
+# Misc
+.DS_Store
+*.tgz

@@ -58,3 +58,4 @@ desktop.ini
 # Custom
 .cache/
 .parcel-cache/
+.vercel

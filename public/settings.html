@@ -592,11 +592,12 @@
             Send a test request to verify your webhook is working correctly
           </p>
           
-          <button class="btn btn-primary" @click="testWebhook()">
+          <button class="btn btn-primary" @click="testWebhook()" :disabled="testingWebhook">
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
             </svg>
-            Send Test Request
+            <span x-show="!testingWebhook">Send Test Request</span>
+            <span x-show="testingWebhook">Sending...</span>
           </button>
           
           <div x-show="testResult" x-transition class="alert" :class="testSuccess ? 'alert-success' : 'alert-error'" style="margin-top: 16px;">
@@ -618,6 +619,7 @@
         successMessage: '',
         testResult: '',
         testSuccess: false,
+        testingWebhook: false,
         
         init() {
           // Auto-hide mobile menu on resize
@@ -651,35 +653,43 @@
         
         async testWebhook() {
           this.testResult = '';
+          this.testSuccess = false;
+          this.testingWebhook = true;
+
           try {
-            const response = await fetch('/api/webhook/transaction-complete', {
+            const payload = {
+              transactionId: 'TEST-' + Date.now(),
+              customerPhone: '+14155552671',
+              customerName: 'Test Customer',
+              dealershipName: 'Test Dealership',
+              amount: 299.99
+            };
+
+            const response = await fetch('/webhook/transaction-complete', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': 'sms-webhook-secure-2024'
               },
-              body: JSON.stringify({
-                transactionId: 'TEST-' + Date.now(),
-                customerPhone: '+14155552671',
-                customerName: 'Test Customer',
-                dealershipName: 'Test Dealership',
-                amount: 299.99
-              })
+              body: JSON.stringify(payload)
             });
-            
+
             const data = await response.json();
+
             if (response.ok) {
+              const status = data.smsStatus ? ` (Twilio status: ${data.smsStatus})` : '';
+              const identifier = data.transactionId ? `Transaction ${data.transactionId}` : 'Test transaction';
               this.testSuccess = true;
-              this.testResult = 'Webhook test successful! Transaction received.';
+              this.testResult = `${identifier} received successfully${status}.`;
             } else {
               this.testSuccess = false;
-              this.testResult = `Test failed: ${data.error || 'Unknown error'}`;
+              this.testResult = `Test failed: ${data.error || data.message || 'Unexpected error'}`;
             }
-            
-            setTimeout(() => this.testResult = '', 5000);
           } catch (err) {
             this.testSuccess = false;
-            this.testResult = 'Test failed: Network error';
+            this.testResult = `Test failed: ${err.message || 'Network error'}`;
+          } finally {
+            this.testingWebhook = false;
             setTimeout(() => this.testResult = '', 5000);
           }
         }

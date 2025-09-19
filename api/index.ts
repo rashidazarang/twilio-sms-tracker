@@ -4,6 +4,41 @@ import { Pool } from 'pg';
 import twilio from 'twilio';
 import { logger } from '../src/utils/logger';
 
+const DEFAULT_API_KEY = process.env.WEBHOOK_API_KEY || 'sms-webhook-secure-2024';
+
+const sanitizePhoneNumber = (input: string): string => {
+  const normalized = (input || '').trim();
+  if (!normalized) {
+    throw new Error('Phone number is required');
+  }
+
+  const digitsOnly = normalized.replace(/[^\d+]/g, '');
+  if (!digitsOnly) {
+    throw new Error('Phone number is invalid');
+  }
+
+  if (digitsOnly.startsWith('+')) {
+    return digitsOnly;
+  }
+
+  if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
+    return `+${digitsOnly}`;
+  }
+
+  if (digitsOnly.length === 10) {
+    return `+1${digitsOnly}`;
+  }
+
+  return `+${digitsOnly}`;
+};
+
+const interpolateTemplate = (template: string, replacements: Record<string, string | number | undefined>) => {
+  return (template || '').replace(/\{([^}]+)\}/g, (_match, key) => {
+    const value = replacements[key.trim()];
+    return value !== undefined && value !== null ? String(value) : '';
+  });
+};
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -78,9 +113,11 @@ const getTwilioClient = () => {
 app.post('/webhook/transaction-complete', async (req, res) => {
   try {
     const apiKey = req.headers['x-api-key'];
-    const expectedKey = process.env.WEBHOOK_API_KEY || 'sms-webhook-secure-2024';
-    if (apiKey !== expectedKey) {
-      return res.status(401).json({ error: 'Unauthorized', debug: process.env.NODE_ENV === 'development' ? `Expected: ${expectedKey}` : undefined });
+    if (apiKey !== DEFAULT_API_KEY) {
+      return res.status(401).json({ 
+        error: 'Unauthorized', 
+        debug: process.env.NODE_ENV === 'development' ? `Expected: ${DEFAULT_API_KEY}` : undefined 
+      });
     }
 
     // Get customer_name and dealership_name from URL parameters or body
@@ -97,8 +134,12 @@ app.post('/webhook/transaction-complete', async (req, res) => {
     }
 
     // Clean phone number for Twilio (remove spaces, parentheses, dashes)
-    const cleanPhone = customerPhone.replace(/[\s\(\)\-\.]/g, '');
-    const formattedPhone = cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`;
+    let formattedPhone: string;
+    try {
+      formattedPhone = sanitizePhoneNumber(customerPhone);
+    } catch (validationError: any) {
+      return res.status(400).json({ error: validationError.message || 'Invalid phone number' });
+    }
 
     // Store transaction in database
     await pool.query(
@@ -333,11 +374,112 @@ app.get('/api/dashboard', async (req, res) => {
   }
 });
 
+// Send a test SMS directly from the dashboard
+app.post('/api/test-sms', async (req, res) => {
+  try {
+    const apiKey = req.headers['x-api-key'];
+    if (apiKey !== DEFAULT_API_KEY) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const {
+      phone,
+      message,
+      customerName,
+      dealershipName,
+      amount,
+      transactionId
+    } = req.body || {};
+
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number is required' });
+    }
+
+    let formattedPhone: string;
+    try {
+      formattedPhone = sanitizePhoneNumber(phone);
+    } catch (validationError: any) {
+      return res.status(400).json({ error: validationError.message || 'Invalid phone number supplied' });
+    }
+
+    const client = getTwilioClient();
+    if (!client || !process.env.TWILIO_PHONE_NUMBER) {
+      return res.status(500).json({ error: 'Twilio is not configured' });
+    }
+
+    const configResult = await pool.query(`
+      SELECT message_template, google_review_url, trustpilot_url
+      FROM message_config
+      ORDER BY updated_at DESC
+      LIMIT 1
+    `);
+
+    const config = configResult.rows[0] || {};
+    const fallbackTemplate = 'Hi {customer_name}! We are checking in from {dealership_name}. Please share your feedback: {review_url}';
+    const activeTemplate = (message && message.trim()) || config.message_template || fallbackTemplate;
+
+    const syntheticTransactionId = transactionId || `TEST-${Date.now()}`;
+    const configuredReviewUrl = config.google_review_url || config.trustpilot_url || '';
+    const feedbackBaseUrl = process.env.FEEDBACK_BASE_URL ? `${process.env.FEEDBACK_BASE_URL}/feedback/${syntheticTransactionId}` : '';
+    const reviewUrl = feedbackBaseUrl || configuredReviewUrl;
+
+    const hydratedMessage = interpolateTemplate(activeTemplate, {
+      customer_name: customerName || 'there',
+      dealership_name: dealershipName || 'America First',
+      amount: amount || '',
+      review_url: reviewUrl,
+      feedback_url: reviewUrl,
+      transaction_id: syntheticTransactionId
+    }).trim();
+
+    if (!hydratedMessage) {
+      return res.status(400).json({ error: 'Message body resolved to empty value' });
+    }
+
+    try {
+      const smsResult = await client.messages.create({
+        body: hydratedMessage,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: formattedPhone
+      });
+
+      logger.info('Test SMS sent successfully', { sid: smsResult.sid, to: formattedPhone });
+
+      return res.json({
+        success: true,
+        message: 'Test SMS sent successfully',
+        payload: {
+          sid: smsResult.sid,
+          status: smsResult.status,
+          to: smsResult.to,
+          from: smsResult.from,
+          dateCreated: smsResult.dateCreated ? smsResult.dateCreated.toISOString() : null,
+          dateSent: smsResult.dateSent ? smsResult.dateSent.toISOString() : null,
+          price: smsResult.price,
+          priceUnit: smsResult.priceUnit,
+          numSegments: smsResult.numSegments,
+          bodyPreview: hydratedMessage.slice(0, 320)
+        }
+      });
+    } catch (twilioError: any) {
+      logger.error('Test SMS send error', twilioError);
+      return res.status(502).json({
+        error: 'Failed to send test SMS',
+        message: twilioError.message || 'Unknown Twilio error',
+        code: twilioError.code
+      });
+    }
+  } catch (error: any) {
+    logger.error('Test SMS endpoint error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Retry single SMS
 app.post('/api/retry/:transactionId', async (req, res) => {
   try {
     const apiKey = req.headers['x-api-key'];
-    if (apiKey !== process.env.WEBHOOK_API_KEY && apiKey !== 'sms-webhook-secure-2024') {
+    if (apiKey !== DEFAULT_API_KEY) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -358,8 +500,7 @@ app.post('/api/retry/:transactionId', async (req, res) => {
     
     if (client) {
       try {
-        const cleanPhone = transaction.customer_phone.replace(/[\s\(\)\-\.]/g, '');
-        const formattedPhone = cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`;
+        const formattedPhone = sanitizePhoneNumber(transaction.customer_phone);
         const feedbackUrl = `${process.env.FEEDBACK_BASE_URL}/feedback/${transactionId}`;
         const message = `Hi ${transaction.customer_name || 'there'}! How was your experience at ${transaction.dealership_name || 'our dealership'}? Please share your feedback: ${feedbackUrl}`;
         
@@ -392,7 +533,7 @@ app.post('/api/retry/:transactionId', async (req, res) => {
 app.post('/api/retry/bulk', async (req, res) => {
   try {
     const apiKey = req.headers['x-api-key'];
-    if (apiKey !== process.env.WEBHOOK_API_KEY && apiKey !== 'sms-webhook-secure-2024') {
+    if (apiKey !== DEFAULT_API_KEY) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -416,8 +557,7 @@ app.post('/api/retry/bulk', async (req, res) => {
 
     for (const transaction of result.rows) {
       try {
-        const cleanPhone = transaction.customer_phone.replace(/[\s\(\)\-\.]/g, '');
-        const formattedPhone = cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`;
+        const formattedPhone = sanitizePhoneNumber(transaction.customer_phone);
         const feedbackUrl = `${process.env.FEEDBACK_BASE_URL}/feedback/${transaction.transaction_id}`;
         const message = `Hi ${transaction.customer_name || 'there'}! How was your experience at ${transaction.dealership_name || 'our dealership'}? Please share your feedback: ${feedbackUrl}`;
         
@@ -447,6 +587,136 @@ app.post('/api/retry/bulk', async (req, res) => {
   } catch (error: any) {
     logger.error('Bulk retry error:', error);
     return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Detailed message lookup combining database and Twilio metadata
+app.get('/api/messages/:transactionId', async (req, res) => {
+  try {
+    const apiKey = req.headers['x-api-key'];
+    if (apiKey !== DEFAULT_API_KEY) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const { transactionId } = req.params;
+    if (!transactionId) {
+      return res.status(400).json({ error: 'Transaction ID is required' });
+    }
+
+    const recordResult = await pool.query(
+      `SELECT 
+        transaction_id,
+        customer_name,
+        customer_phone,
+        dealership_name,
+        amount,
+        sms_sent,
+        sms_sent_at,
+        created_at
+      FROM transactions
+      WHERE transaction_id = $1
+      LIMIT 1`,
+      [transactionId]
+    );
+
+    if (recordResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    const row = recordResult.rows[0];
+    const createdAtDate = row.created_at ? new Date(row.created_at) : null;
+    const smsSentAtDate = row.sms_sent_at ? new Date(row.sms_sent_at) : null;
+
+    let twilioDetails: any = null;
+    const client = getTwilioClient();
+
+    if (client) {
+      try {
+        const formattedPhone = sanitizePhoneNumber(row.customer_phone);
+        const lookupOptions: any = {
+          to: formattedPhone,
+          limit: 20
+        };
+
+        if (createdAtDate && !Number.isNaN(createdAtDate.getTime())) {
+          const searchStart = new Date(createdAtDate.getTime() - 1000 * 60 * 60 * 24);
+          lookupOptions.dateSentAfter = searchStart;
+        }
+
+        const twilioMessages = await client.messages.list(lookupOptions);
+
+        const matchedMessage = twilioMessages.find((msg: any) => {
+          if (!msg?.body) return false;
+          try {
+            return msg.body.includes(row.transaction_id);
+          } catch (err) {
+            return false;
+          }
+        }) || twilioMessages[0];
+
+        if (matchedMessage) {
+          twilioDetails = {
+            sid: matchedMessage.sid,
+            status: matchedMessage.status,
+            to: matchedMessage.to,
+            from: matchedMessage.from,
+            direction: matchedMessage.direction,
+            numSegments: matchedMessage.numSegments,
+            price: matchedMessage.price,
+            priceUnit: matchedMessage.priceUnit,
+            errorCode: matchedMessage.errorCode,
+            errorMessage: matchedMessage.errorMessage,
+            apiVersion: matchedMessage.apiVersion,
+            dateCreated: matchedMessage.dateCreated ? matchedMessage.dateCreated.toISOString() : null,
+            dateUpdated: matchedMessage.dateUpdated ? matchedMessage.dateUpdated.toISOString() : null,
+            dateSent: matchedMessage.dateSent ? matchedMessage.dateSent.toISOString() : null,
+            bodyPreview: matchedMessage.body ? matchedMessage.body.slice(0, 500) : null
+          };
+        }
+      } catch (twilioLookupError: any) {
+        logger.warn('Twilio lookup failed for transaction', { transactionId, error: twilioLookupError.message });
+      }
+    }
+
+    const timeline = [
+      {
+        label: 'Transaction created',
+        timestamp: createdAtDate ? createdAtDate.toISOString() : null
+      }
+    ];
+
+    if (smsSentAtDate && !Number.isNaN(smsSentAtDate.getTime())) {
+      timeline.push({
+        label: 'SMS marked sent',
+        timestamp: smsSentAtDate.toISOString()
+      });
+    }
+
+    if (twilioDetails?.dateSent) {
+      timeline.push({
+        label: 'Twilio delivery timestamp',
+        timestamp: twilioDetails.dateSent
+      });
+    }
+
+    return res.json({
+      success: true,
+      record: {
+        transactionId: row.transaction_id,
+        customerName: row.customer_name,
+        customerPhone: row.customer_phone,
+        dealershipName: row.dealership_name,
+        amount: row.amount,
+        smsSent: row.sms_sent,
+        smsSentAt: smsSentAtDate && !Number.isNaN(smsSentAtDate.getTime()) ? smsSentAtDate.toISOString() : null,
+        createdAt: createdAtDate && !Number.isNaN(createdAtDate.getTime()) ? createdAtDate.toISOString() : null
+      },
+      twilio: twilioDetails,
+      timeline: timeline.filter(event => event.timestamp)
+    });
+  } catch (error: any) {
+    logger.error('Message detail error:', error);
+    return res.status(500).json({ error: 'Failed to load message details' });
   }
 });
 

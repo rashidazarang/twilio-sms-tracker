@@ -1,5 +1,5 @@
 {
-  "name": "sms-feedback-system",
+  "name": "twilio-sms-tracker",
   "version": "1.1.0",
   "description": "SMS feedback system for post-transaction customer reviews",
   "main": "dist/index.js",

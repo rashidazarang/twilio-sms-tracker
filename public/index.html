@@ -12,6 +12,10 @@
       padding: 0;
       box-sizing: border-box;
     }
+
+    [x-cloak] {
+      display: none !important;
+    }
     
     :root {
       --primary: #3B82F6;
@@ -502,6 +506,17 @@
       font-size: 12px;
       color: var(--text-muted);
     }
+
+    .message-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .message-footer .btn {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
     
     /* List View */
     .list-container {
@@ -689,7 +704,243 @@
       height: 40px;
       animation: spin 1s linear infinite;
     }
-    
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 2000;
+    }
+
+    .modal-panel {
+      width: min(600px, 100%);
+      max-height: 90vh;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-panel.large {
+      width: min(720px, 100%);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px;
+      border-radius: var(--radius);
+      transition: background 0.15s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: var(--bg-secondary);
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-form label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .modal-form input,
+    .modal-form textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-primary);
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .modal-form input:focus,
+    .modal-form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .modal-form textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .modal-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .modal-alert {
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      border: 1px solid transparent;
+    }
+
+    .modal-alert.success {
+      background: #ECFDF5;
+      border-color: #A7F3D0;
+      color: #047857;
+    }
+
+    .modal-alert.error {
+      background: #FEF2F2;
+      border-color: #FECACA;
+      color: #B91C1C;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .detail-block {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-secondary);
+    }
+
+    .detail-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .details-section {
+      margin-bottom: 24px;
+    }
+
+    .details-section h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .timeline {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .timeline-marker {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .timeline-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .timeline-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .interactive-row {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .interactive-row:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .interactive-card {
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .interactive-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .details-empty {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -871,7 +1122,7 @@
             </svg>
             <input type="text" class="search-input" placeholder="Search messages..." x-model="searchQuery" @input="filterMessages">
           </div>
-          <button class="btn btn-primary" @click="sendTestSMS()">
+          <button class="btn btn-primary" @click="openTestSmsModal()">
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -1027,7 +1278,12 @@
                   </thead>
                   <tbody>
                     <template x-for="msg in paginatedMessages" :key="msg.transactionId">
-                      <tr>
+                      <tr 
+                        class="interactive-row"
+                        tabindex="0"
+                        @click="openMessageDetails(msg)"
+                        @keydown.enter.prevent="openMessageDetails(msg)"
+                        @keydown.space.prevent="openMessageDetails(msg)">
                         <td>
                           <span class="badge" :class="{
                             'badge-success': msg.status === 'delivered',
@@ -1052,12 +1308,18 @@
                         <td>
                           <button 
                             x-show="msg.status === 'failed'"
-                            @click="retrySingle(msg.transactionId)"
+                            @click.stop="retrySingle(msg.transactionId)"
                             class="btn btn-primary"
                             style="padding: 4px 8px; font-size: 12px;">
                             Retry
                           </button>
-                          <span x-show="msg.status === 'delivered'" style="color: var(--success);">✓</span>
+                          <button 
+                            class="btn btn-secondary"
+                            style="padding: 4px 8px; font-size: 12px; margin-left: 6px;"
+                            @click.stop="openMessageDetails(msg)">
+                            Details
+                          </button>
+                          <span x-show="msg.status === 'delivered'" style="color: var(--success); margin-left: 6px;">✓</span>
                         </td>
                       </tr>
                     </template>
@@ -1097,7 +1359,13 @@
             <div x-show="viewMode === 'card'">
               <div class="cards-container">
                 <template x-for="msg in paginatedMessages" :key="msg.transactionId">
-                  <div class="message-card">
+                  <div 
+                    class="message-card interactive-card"
+                    tabindex="0"
+                    role="button"
+                    @click="openMessageDetails(msg)"
+                    @keydown.enter.prevent="openMessageDetails(msg)"
+                    @keydown.space.prevent="openMessageDetails(msg)">
                     <div class="message-header">
                       <div class="message-info">
                         <div class="message-customer" x-text="msg.name"></div>
@@ -1116,13 +1384,19 @@
                     </div>
                     <div class="message-footer">
                       <span x-text="msg.time"></span>
-                      <button 
-                        x-show="msg.status === 'failed'"
-                        @click="retrySingle(msg.transactionId)"
-                        class="btn btn-primary"
-                        style="padding: 4px 8px; font-size: 12px;">
-                        Retry
-                      </button>
+                      <div class="message-actions">
+                        <button 
+                          class="btn btn-secondary"
+                          @click.stop="openMessageDetails(msg)">
+                          View Details
+                        </button>
+                        <button 
+                          x-show="msg.status === 'failed'"
+                          @click.stop="retrySingle(msg.transactionId)"
+                          class="btn btn-primary">
+                          Retry
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </template>
@@ -1146,7 +1420,13 @@
             <div x-show="viewMode === 'list'">
               <div class="list-container">
                 <template x-for="msg in paginatedMessages" :key="msg.transactionId">
-                  <div class="list-item">
+                  <div 
+                    class="list-item interactive-card"
+                    tabindex="0"
+                    role="button"
+                    @click="openMessageDetails(msg)"
+                    @keydown.enter.prevent="openMessageDetails(msg)"
+                    @keydown.space.prevent="openMessageDetails(msg)">
                     <div class="list-status" :class="{
                       'delivered': msg.status === 'delivered',
                       'failed': msg.status === 'failed' || msg.status === 'undelivered',
@@ -1180,6 +1460,21 @@
                             <span x-text="msg.status"></span>
                           </span>
                         </div>
+                        <div class="list-detail" style="flex-direction: row; align-items: center; gap: 8px;">
+                          <button 
+                            class="btn btn-secondary"
+                            style="padding: 4px 8px; font-size: 12px;"
+                            @click.stop="openMessageDetails(msg)">
+                            View Details
+                          </button>
+                          <button 
+                            class="btn btn-primary"
+                            style="padding: 4px 8px; font-size: 12px;"
+                            x-show="msg.status === 'failed'"
+                            @click.stop="retrySingle(msg.transactionId)">
+                            Retry
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1201,6 +1496,238 @@
         </div>
       </div>
     </main>
+
+  <!-- Test SMS Modal -->
+  <div
+    x-cloak
+    x-show="testSmsModalOpen"
+    class="modal-backdrop"
+    x-transition.opacity
+    @keydown.escape.window="closeTestSmsModal()"
+    @click.self="closeTestSmsModal()">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="testSmsTitle">
+      <div class="modal-header">
+        <h3 class="modal-title" id="testSmsTitle">Send Test SMS</h3>
+        <button class="modal-close" type="button" @click="closeTestSmsModal()" aria-label="Close test SMS modal">&times;</button>
+      </div>
+      <form @submit.prevent="submitTestSms()">
+        <div class="modal-body">
+          <div class="modal-form">
+            <div>
+              <label for="test-phone">Phone Number</label>
+              <input id="test-phone" type="tel" placeholder="+14155552671" x-model="testSmsForm.phone" required>
+            </div>
+            <div>
+              <label for="test-customer">Customer Name (optional)</label>
+              <input id="test-customer" type="text" placeholder="Jane Doe" x-model="testSmsForm.customerName">
+            </div>
+            <div>
+              <label for="test-dealership">Dealership (optional)</label>
+              <input id="test-dealership" type="text" placeholder="America First" x-model="testSmsForm.dealershipName">
+            </div>
+            <div>
+              <label for="test-amount">Amount (optional)</label>
+              <input id="test-amount" type="number" step="0.01" placeholder="250.00" x-model="testSmsForm.amount">
+            </div>
+            <div>
+              <label for="test-message">Message Override (optional)</label>
+              <textarea id="test-message" placeholder="Leave blank to use your default template" x-model="testSmsForm.message"></textarea>
+              <p class="modal-hint">Supports placeholders like {customer_name}, {dealership_name}, {review_url}.</p>
+            </div>
+            <div x-show="testSmsError" class="modal-alert error" x-text="testSmsError"></div>
+            <div x-show="testSmsSuccessMessage" class="modal-alert success">
+              <div x-text="testSmsSuccessMessage"></div>
+              <template x-if="testSmsPayload">
+                <div class="details-grid" style="margin-top: 12px;">
+                  <div class="detail-block">
+                    <span class="detail-label">Twilio SID</span>
+                    <span class="detail-value"><code x-text="testSmsPayload.sid"></code></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value" x-text="testSmsPayload.status || 'unknown'"></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Segments</span>
+                    <span class="detail-value" x-text="testSmsPayload.numSegments || 1"></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Sent</span>
+                    <span class="detail-value" x-text="formatTimestamp(testSmsPayload.dateSent || testSmsPayload.dateCreated)"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span class="modal-hint" x-show="sendingTestSms">Sending via Twilio&hellip;</span>
+          <button type="button" class="btn btn-secondary" @click="closeTestSmsModal()" :disabled="sendingTestSms">Cancel</button>
+          <button type="submit" class="btn btn-primary" :disabled="sendingTestSms">
+            <span x-show="!sendingTestSms">Send SMS</span>
+            <span x-show="sendingTestSms">Sending...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Message Details Modal -->
+  <div
+    x-cloak
+    x-show="detailsModalOpen"
+    class="modal-backdrop"
+    x-transition.opacity
+    @keydown.escape.window="closeMessageDetails()"
+    @click.self="closeMessageDetails()">
+    <div class="modal-panel large" role="dialog" aria-modal="true" aria-labelledby="messageDetailsTitle">
+      <div class="modal-header">
+        <h3 class="modal-title" id="messageDetailsTitle">Record Details</h3>
+        <button class="modal-close" type="button" @click="closeMessageDetails()" aria-label="Close record details modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div x-show="detailsLoading" class="loading" style="min-height: 160px;">
+          <div class="spinner"></div>
+        </div>
+        <div x-show="!detailsLoading">
+          <div x-show="detailsError" class="modal-alert error" x-text="detailsError"></div>
+          <div x-show="!detailsError">
+            <div class="details-section">
+              <h4>Message Summary</h4>
+              <div class="details-grid">
+                <div class="detail-block">
+                  <span class="detail-label">Transaction ID</span>
+                  <span class="detail-value">
+                    <code x-text="resolveValue(detailsData.record && detailsData.record.transactionId, detailsPreview && detailsPreview.transactionId, '—')"></code>
+                  </span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Status</span>
+                  <span class="detail-value" x-text="resolveValue(detailsPreview && detailsPreview.status, detailsData.twilio && detailsData.twilio.status, 'unknown')"></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Error Code</span>
+                  <span class="detail-value" x-text="resolveValue(detailsPreview && detailsPreview.errorCode, detailsData.twilio && detailsData.twilio.errorCode, 'None')"></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Last Activity</span>
+                  <span class="detail-value" x-text="resolveValue(
+                    detailsData.twilio && formatTimestamp(detailsData.twilio.dateSent || detailsData.twilio.dateUpdated),
+                    detailsData.record && formatTimestamp(detailsData.record.smsSentAt),
+                    detailsPreview && detailsPreview.time,
+                    '—'
+                  )"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="details-section">
+              <h4>Customer &amp; Transaction</h4>
+              <div class="details-grid">
+                <div class="detail-block">
+                  <span class="detail-label">Customer</span>
+                  <span class="detail-value" x-text="resolveValue(detailsData.record && detailsData.record.customerName, detailsPreview && detailsPreview.name, '—')"></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Phone</span>
+                  <span class="detail-value" x-text="formatPhone(resolveValue(detailsData.record && detailsData.record.customerPhone, detailsPreview && detailsPreview.phone, ''))"></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Dealership</span>
+                  <span class="detail-value" x-text="resolveValue(detailsData.record && detailsData.record.dealershipName, detailsPreview && detailsPreview.dealership, '—')"></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Amount</span>
+                  <span class="detail-value" x-text="
+                    detailsData.record && detailsData.record.amount
+                      ? formatAmount(detailsData.record.amount)
+                      : (detailsPreview && detailsPreview.amount
+                        ? formatAmount(detailsPreview.amount)
+                        : '—')
+                  "></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Created</span>
+                  <span class="detail-value" x-text="formatTimestamp(detailsData.record && detailsData.record.createdAt)"></span>
+                </div>
+                <div class="detail-block">
+                  <span class="detail-label">Marked Sent</span>
+                  <span class="detail-value" x-text="formatTimestamp(detailsData.record && detailsData.record.smsSentAt)"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="details-section">
+              <h4>Twilio Metadata</h4>
+              <template x-if="detailsData.twilio">
+                <div class="details-grid">
+                  <div class="detail-block">
+                    <span class="detail-label">SID</span>
+                    <span class="detail-value"><code x-text="detailsData.twilio.sid"></code></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Direction</span>
+                    <span class="detail-value" x-text="detailsData.twilio.direction || '—'"></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Price</span>
+                    <span class="detail-value" x-text="detailsData.twilio.price ? `${detailsData.twilio.price} ${detailsData.twilio.priceUnit || 'USD'}` : '—'"></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Segments</span>
+                    <span class="detail-value" x-text="detailsData.twilio.numSegments || 1"></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Date Created</span>
+                    <span class="detail-value" x-text="formatTimestamp(detailsData.twilio.dateCreated)"></span>
+                  </div>
+                  <div class="detail-block">
+                    <span class="detail-label">Date Sent</span>
+                    <span class="detail-value" x-text="formatTimestamp(detailsData.twilio.dateSent)"></span>
+                  </div>
+                  <div class="detail-block" style="grid-column: 1 / -1;">
+                    <span class="detail-label">Body Preview</span>
+                    <span class="detail-value" x-text="detailsData.twilio.bodyPreview || '—'"></span>
+                  </div>
+                </div>
+              </template>
+              <div x-show="!detailsData.twilio" class="details-empty">No Twilio metadata available for this record.</div>
+            </div>
+
+            <div class="details-section">
+              <h4>Timeline</h4>
+              <template x-if="detailsData.timeline && detailsData.timeline.length">
+                <ul class="timeline">
+                  <template x-for="event in detailsData.timeline" :key="event.label + event.timestamp">
+                    <li class="timeline-item">
+                      <span class="timeline-marker"></span>
+                      <div class="timeline-content">
+                        <span class="timeline-label" x-text="event.label"></span>
+                        <span class="timeline-time" x-text="formatTimestamp(event.timestamp)"></span>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <div x-show="!detailsData.timeline || detailsData.timeline.length === 0" class="details-empty">No timeline events recorded.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-hint" x-text="detailsCopyNotice" x-show="detailsCopyNotice"></div>
+        <button type="button" class="btn btn-secondary" @click="closeMessageDetails()">Close</button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          @click="copyTransactionId()"
+          x-show="(detailsData.record && detailsData.record.transactionId) || (detailsPreview && detailsPreview.transactionId)">
+          Copy ID
+        </button>
+      </div>
+    </div>
+  </div>
+
   </div>
 
   <script>
@@ -1235,31 +1762,59 @@
           hasPrev: false
         },
         retrying: false,
-        
+        refreshTimer: null,
+        testSmsModalOpen: false,
+        testSmsForm: {
+          phone: '',
+          customerName: '',
+          dealershipName: '',
+          amount: '',
+          message: ''
+        },
+        sendingTestSms: false,
+        testSmsError: '',
+        testSmsSuccessMessage: '',
+        testSmsPayload: null,
+        detailsModalOpen: false,
+        detailsLoading: false,
+        detailsError: '',
+        detailsPreview: null,
+        detailsData: {
+          record: null,
+          twilio: null,
+          timeline: []
+        },
+        detailsCopyNotice: '',
+
         async init() {
           await this.fetchData();
-          // Auto-refresh every 30 seconds
-          setInterval(() => this.fetchData(false), 30000);
+          this.refreshTimer = setInterval(() => this.fetchData(false), 30000);
+          window.addEventListener('beforeunload', () => {
+            if (this.refreshTimer) {
+              clearInterval(this.refreshTimer);
+            }
+          });
         },
-        
+
         async fetchData(showLoading = true) {
           try {
             if (showLoading) this.loading = true;
             this.error = null;
-            
-            // Fetch dashboard data with pagination
+
             const response = await fetch(`/api/dashboard?page=${this.pagination.page}&limit=${this.pagination.limit}&view=${this.viewMode}`);
             if (!response.ok) throw new Error('Failed to fetch dashboard data');
             const result = await response.json();
-            
-            // Update data with real database info
+
             this.data = result;
+            this.data.messages = result.messages || [];
             this.pagination = result.pagination || this.pagination;
-            
-            // Set messages from real data
-            this.filteredMessages = result.messages || [];
-            this.paginatedMessages = this.filteredMessages;
-            
+            this.filteredMessages = this.data.messages;
+            this.paginatedMessages = this.data.messages;
+
+            if (this.searchQuery) {
+              this.filterMessages();
+            }
+
             this.loading = false;
           } catch (error) {
             console.error('Failed to fetch data:', error);
@@ -1267,18 +1822,18 @@
             this.loading = false;
           }
         },
-        
+
         async goToPage(page) {
           if (page < 1 || page > this.pagination.totalPages) return;
           this.pagination.page = page;
           await this.fetchData();
         },
-        
+
         getPageNumbers() {
           const pages = [];
           const total = this.pagination.totalPages;
           const current = this.pagination.page;
-          
+
           if (total <= 7) {
             for (let i = 1; i <= total; i++) {
               pages.push(i);
@@ -1300,47 +1855,65 @@
               pages.push(total);
             }
           }
-          
+
           return pages.filter(p => p !== '...' || pages.indexOf(p) === pages.lastIndexOf(p));
         },
-        
+
         filterMessages() {
+          const base = this.data.messages || [];
+
           if (!this.searchQuery) {
-            this.paginatedMessages = this.data.messages;
-          } else {
-            const query = this.searchQuery.toLowerCase();
-            this.paginatedMessages = this.data.messages.filter(msg => 
-              (msg.name && msg.name.toLowerCase().includes(query)) ||
-              (msg.phone && msg.phone.includes(query)) ||
-              (msg.dealership && msg.dealership.toLowerCase().includes(query)) ||
-              (msg.transactionId && msg.transactionId.toLowerCase().includes(query))
-            );
+            this.filteredMessages = base;
+            this.paginatedMessages = base;
+            return;
           }
+
+          const query = this.searchQuery.toLowerCase();
+          const filtered = base.filter(msg =>
+            (msg.name && msg.name.toLowerCase().includes(query)) ||
+            (msg.phone && msg.phone.includes(query)) ||
+            (msg.dealership && msg.dealership.toLowerCase().includes(query)) ||
+            (msg.transactionId && msg.transactionId.toLowerCase().includes(query))
+          );
+
+          this.filteredMessages = filtered;
+          this.paginatedMessages = filtered;
         },
-        
+
         formatPhone(phone) {
           if (!phone) return 'N/A';
-          // Format phone number for display
           if (phone.startsWith('+1') && phone.length === 12) {
             return `+1 (${phone.slice(2, 5)}) ${phone.slice(5, 8)}-${phone.slice(8)}`;
           }
           return phone;
         },
-        
+
         formatAmount(amount) {
           if (!amount) return '$0.00';
           return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
         },
-        
+
+        formatTimestamp(timestamp) {
+          if (!timestamp) return '—';
+          try {
+            return new Intl.DateTimeFormat('en-US', {
+              dateStyle: 'medium',
+              timeStyle: 'short'
+            }).format(new Date(timestamp));
+          } catch (error) {
+            return timestamp;
+          }
+        },
+
         getPercentageChange() {
           const today = this.data.today.sent || 0;
           const yesterday = this.data.today.yesterdayTotal || 0;
-          
+
           if (yesterday === 0) {
             if (today > 0) return '<span style="color: #10B981;">↑ New activity</span>';
             return '<span style="color: #6B7280;">No previous data</span>';
           }
-          
+
           const change = Math.round(((today - yesterday) / yesterday) * 100);
           if (change > 0) {
             return `<span style="color: #10B981;">↑ ${change}% from yesterday</span>`;
@@ -1350,24 +1923,24 @@
             return '<span style="color: #6B7280;">Same as yesterday</span>';
           }
         },
-        
+
         async retryAll() {
           if (this.retrying || !confirm(`Retry all ${this.data.today.failed} failed messages?`)) return;
-          
+
           this.retrying = true;
           try {
-            const response = await fetch('/api/retry/bulk', { 
+            const response = await fetch('/api/retry/bulk', {
               method: 'POST',
-              headers: { 
+              headers: {
                 'x-api-key': 'sms-webhook-secure-2024',
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({})
             });
-            
+
             if (response.ok) {
               alert('Retry initiated for all failed messages');
-              await this.fetchData();
+              await this.fetchData(false);
             } else {
               alert('Failed to retry messages');
             }
@@ -1377,18 +1950,18 @@
             this.retrying = false;
           }
         },
-        
+
         async retrySingle(id) {
           if (!confirm('Retry this message?')) return;
-          
+
           try {
-            const response = await fetch(`/api/retry/${id}`, { 
+            const response = await fetch(`/api/retry/${id}`, {
               method: 'POST',
               headers: { 'x-api-key': 'sms-webhook-secure-2024' }
             });
-            
+
             if (response.ok) {
-              await this.fetchData();
+              await this.fetchData(false);
             } else {
               alert('Failed to retry message');
             }
@@ -1396,56 +1969,214 @@
             alert('Error retrying message');
           }
         },
-        
+
         async refreshData() {
           await this.fetchData();
         },
-        
-        sendTestSMS() {
-          const testPhone = prompt('Enter phone number for test SMS (e.g., +14155172054):');
-          if (testPhone) {
-            // Call test SMS endpoint when ready
-            alert(`Test SMS feature will send to: ${testPhone}`);
+
+        openTestSmsModal() {
+          this.resetTestSmsState();
+          this.testSmsModalOpen = true;
+          this.$nextTick(() => {
+            const input = document.getElementById('test-phone');
+            if (input) input.focus();
+          });
+        },
+
+        closeTestSmsModal() {
+          if (this.sendingTestSms) return;
+          this.testSmsModalOpen = false;
+        },
+
+        getDefaultTestSmsForm() {
+          return {
+            phone: '',
+            customerName: '',
+            dealershipName: '',
+            amount: '',
+            message: ''
+          };
+        },
+
+        resetTestSmsState() {
+          this.testSmsForm = this.getDefaultTestSmsForm();
+          this.testSmsError = '';
+          this.testSmsSuccessMessage = '';
+          this.testSmsPayload = null;
+        },
+
+        async submitTestSms() {
+          if (!this.testSmsForm.phone) {
+            this.testSmsError = 'Please provide a phone number.';
+            return;
+          }
+
+          this.sendingTestSms = true;
+          this.testSmsError = '';
+
+          const payload: any = {
+            phone: this.testSmsForm.phone.trim()
+          };
+
+          if (this.testSmsForm.customerName && this.testSmsForm.customerName.trim()) {
+            payload.customerName = this.testSmsForm.customerName.trim();
+          }
+
+          if (this.testSmsForm.dealershipName && this.testSmsForm.dealershipName.trim()) {
+            payload.dealershipName = this.testSmsForm.dealershipName.trim();
+          }
+
+          if (this.testSmsForm.message && this.testSmsForm.message.trim()) {
+            payload.message = this.testSmsForm.message.trim();
+          }
+
+          if (this.testSmsForm.amount && this.testSmsForm.amount.trim()) {
+            const amountValue = parseFloat(this.testSmsForm.amount.trim());
+            if (!Number.isNaN(amountValue)) {
+              payload.amount = amountValue;
+            }
+          }
+
+          try {
+            const response = await fetch('/api/test-sms', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'sms-webhook-secure-2024'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || 'Failed to send test SMS');
+            }
+
+            this.testSmsSuccessMessage = data.message || 'Test SMS sent successfully.';
+            this.testSmsPayload = data.payload || null;
+            await this.fetchData(false);
+          } catch (error) {
+            console.error('Test SMS error:', error);
+            this.testSmsError = error.message || 'Unable to send test SMS.';
+          } finally {
+            this.sendingTestSms = false;
           }
         },
-        
+
+        openMessageDetails(message) {
+          if (!message || !message.transactionId) return;
+          this.detailsPreview = message;
+          this.detailsModalOpen = true;
+          this.detailsLoading = true;
+          this.detailsError = '';
+          this.detailsData = { record: null, twilio: null, timeline: [] };
+          this.detailsCopyNotice = '';
+          this.fetchMessageDetails(message.transactionId);
+        },
+
+        async fetchMessageDetails(transactionId) {
+          try {
+            const response = await fetch(`/api/messages/${encodeURIComponent(transactionId)}`, {
+              headers: { 'x-api-key': 'sms-webhook-secure-2024' }
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || 'Failed to load message details');
+            }
+
+            this.detailsData = data;
+          } catch (error) {
+            console.error('Details fetch error:', error);
+            this.detailsError = error.message || 'Unable to load message details.';
+          } finally {
+            this.detailsLoading = false;
+          }
+        },
+
+        closeMessageDetails() {
+          this.detailsModalOpen = false;
+          this.detailsLoading = false;
+          this.detailsError = '';
+          this.detailsPreview = null;
+          this.detailsData = { record: null, twilio: null, timeline: [] };
+          this.detailsCopyNotice = '';
+        },
+
+        async copyTransactionId() {
+          const transactionId = (this.detailsData.record && this.detailsData.record.transactionId) || (this.detailsPreview && this.detailsPreview.transactionId);
+          if (!transactionId) return;
+
+          try {
+            await navigator.clipboard.writeText(transactionId);
+            this.detailsCopyNotice = 'Transaction ID copied to clipboard';
+          } catch (error) {
+            console.error('Clipboard error:', error);
+            this.detailsCopyNotice = 'Unable to copy transaction ID';
+          }
+
+          setTimeout(() => {
+            this.detailsCopyNotice = '';
+          }, 2500);
+        },
+
+        resolveValue(...values) {
+          const lastIndex = values.length - 1;
+          for (let index = 0; index < values.length; index++) {
+            const value = values[index];
+
+            if (value === 0) {
+              return value;
+            }
+
+            if (value === '—' && index !== lastIndex) {
+              continue;
+            }
+
+            if (value !== undefined && value !== null && value !== '' && value !== false) {
+              return value;
+            }
+          }
+          return '—';
+        },
+
         exportData() {
-          // Convert messages to CSV
+          const rows = this.data.messages || [];
           const csv = [
             ['Status', 'Phone', 'Customer', 'Dealership', 'Amount', 'Time', 'Error', 'Transaction ID'].join(','),
-            ...this.data.messages.map(msg => [
+            ...rows.map(msg => [
               msg.status,
               msg.phone,
-              `"${msg.name}"`,
-              `"${msg.dealership}"`,
-              msg.amount,
-              `"${msg.time}"`,
+              `"${msg.name || ''}"`,
+              `"${msg.dealership || ''}"`,
+              msg.amount || '',
+              `"${msg.time || ''}"`,
               msg.errorCode || '',
-              msg.transactionId
+              msg.transactionId || ''
             ].join(','))
           ].join('\n');
-          
-          // Download CSV
+
           const blob = new Blob([csv], { type: 'text/csv' });
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
           a.download = `sms-log-${new Date().toISOString().split('T')[0]}.csv`;
           a.click();
+          window.URL.revokeObjectURL(url);
         },
-        
+
         viewAnalytics() {
           window.location.href = '/analytics.html';
         },
-        
+
         manageTwilio() {
           window.open('https://console.twilio.com', '_blank');
         },
-        
+
         viewDocs() {
           window.open('https://github.com/rashidazarang/sms-feedback-system', '_blank');
         }
-      }
+      };
     }
   </script>
 </body>
