@@ -1,8 +1,6 @@
-<div align="center">
-  
 # 📱 Twilio SMS Tracker
 
-### Open-Source SMS Communication Management System
+## Open-Source SMS Communication Management System
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker&env=DATABASE_URL,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER&envDescription=Required%20environment%20variables&envLink=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker%23environment-variables&project-name=twilio-sms-tracker&repository-name=twilio-sms-tracker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,45 +11,40 @@
 
 [**Live Demo**](https://sms-feedback-system-8xa1.vercel.app) • [**Documentation**](#-documentation) • [**Quick Start**](#-quick-start)
 
-</div>
-
 ---
 
 ## 🎥 Demo Video
 
-<div align="center">
-  <a href="https://github.com/rashidazarang/twilio-sms-tracker">
-    <img src="https://img.shields.io/badge/Watch-Demo_Video-red?style=for-the-badge&logo=youtube" alt="Demo Video">
-  </a>
-  
-  Watch our comprehensive walkthrough demonstrating all features and setup process
-</div>
+<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1119997435?h=0&badge=0&autopause=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Twilio SMS Tracker Demo"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
+Watch our comprehensive walkthrough demonstrating all features and setup process
 
 ## 📸 Screenshots
 
-<div align="center">
-  
 ### Dashboard - Real-time SMS Metrics
-<img src="https://user-images.githubusercontent.com/placeholder/dashboard.png" alt="Dashboard Screenshot" width="100%">
+![Dashboard Screenshot](./images/desktop-dashboard.png)
 
 *Monitor delivery rates, track failed messages, and manage SMS campaigns from a centralized dashboard*
 
 ### Message Configuration
-<img src="https://user-images.githubusercontent.com/placeholder/messages.png" alt="Messages Configuration" width="100%">
+![Messages Configuration](./images/desktop-messages.png)
 
 *Customize SMS templates with dynamic variables and preview messages before sending*
 
 ### Analytics Dashboard
-<img src="https://user-images.githubusercontent.com/placeholder/analytics.png" alt="Analytics Dashboard" width="100%">
+![Analytics Dashboard](./images/desktop-analytics.png)
 
 *Track performance metrics, daily trends, and top-performing dealerships*
 
 ### Webhook Settings
-<img src="https://user-images.githubusercontent.com/placeholder/settings.png" alt="Settings Page" width="100%">
+![Settings Page](./images/desktop-settings.png)
 
 *Professional webhook documentation with live testing capabilities*
 
-</div>
+### Mobile Responsive Design
+![Mobile Dashboard](./images/mobile-dashboard.png)
+
+*Fully responsive interface optimized for mobile devices*
 
 ## ✨ Key Features
 
@@ -100,11 +93,7 @@ Get up and running in **under 5 minutes**!
 
 ### Option 1: One-Click Deploy (Recommended)
 
-<div align="center">
-
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frashidazarang%2Ftwilio-sms-tracker)
-
-</div>
 
 ### Option 2: Manual Setup
 
@@ -222,16 +211,12 @@ twilio-sms-tracker/
 
 ## 🛠️ Technology Stack
 
-<div align="center">
-
 | Frontend | Backend | Database | Deployment |
 |----------|---------|----------|------------|
 | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) | ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white) | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) | ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white) |
 | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) | ![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge) | ![Neon](https://img.shields.io/badge/Neon-00E5A0?style=for-the-badge) | ![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white) |
 | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) | | |
 | ![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=black) | ![Twilio](https://img.shields.io/badge/Twilio-F22F46?style=for-the-badge&logo=twilio&logoColor=white) | | |
-
-</div>
 
 ## 🤝 Contributing
 
@@ -311,8 +296,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-<div align="center">
-
 | Type | Link |
 |------|------|
 | 💬 **Discussions** | [GitHub Discussions](https://github.com/rashidazarang/twilio-sms-tracker/discussions) |
@@ -320,16 +303,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 | 📧 **Email** | support@example.com |
 | 📖 **Docs** | [Documentation](https://github.com/rashidazarang/twilio-sms-tracker/wiki) |
 
-</div>
-
 ---
-
-<div align="center">
 
 **Built with ❤️ for the business community**
 
 ⭐ Star us on GitHub — it helps!
 
 [**Website**](https://example.com) • [**Blog**](https://blog.example.com) • [**Twitter**](https://twitter.com/example)
-
-</div>
